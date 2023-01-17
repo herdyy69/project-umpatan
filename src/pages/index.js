@@ -3,6 +3,7 @@ import { NextPage } from 'next'
 import { useState, useEffect } from 'react'
 import { Meta } from '@/Layouts/Meta'
 import { Main } from '@/components/Templates/Main'
+import { ChatD } from '@/components/Chats/ChatD'
 import { AppConfig } from '@/Utils/AppConfig'
 
 import { initializeApp } from 'firebase/app'
@@ -10,12 +11,16 @@ import { getDatabase, ref, get, set, onValue } from 'firebase/database'
 
 import { BiMessageAdd } from 'react-icons/bi'
 import { MdOutlineCloseFullscreen } from 'react-icons/md'
+import { MdOutlineExitToApp } from 'react-icons/md'
+
+import { BsChatFill } from 'react-icons/bs'
 
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 const Index = () => {
   const [modal, setModal] = useState()
+  const [modalChat, setModalChat] = useState(false)
 
   const [user, setUser] = useState('Anonymous')
   const [message, setMessage] = useState()
@@ -82,6 +87,22 @@ const Index = () => {
       setPastMessage(pastMsg)
     })
   }, [])
+
+  const closeButton = () => {
+    return (
+      <button
+        onClick={() => {
+          setModalChat(true)
+          if (modalChat === true) {
+            setModalChat(false)
+          }
+        }}
+        className="flex flex-row items-center">
+        <MdOutlineExitToApp className="w-8 h-8" />
+        Exit
+      </button>
+    )
+  }
 
   const myModal = () => {
     return (
@@ -165,15 +186,26 @@ const Index = () => {
         pauseOnHover
         theme="light"
       />
-
       {modal && myModal()}
+      {modalChat ? <ChatD status={modalChat} button={closeButton()} /> : ''}
+
       <BiMessageAdd
         onClick={() => {
           setModal(true)
         }}
         className="w-10 h-10 fixed top-[2.1rem] right-[2.4rem] z-[999] cursor-pointer"
       />
-
+      <div className="fixed bottom-3 right-6 bg-slate-50 p-3 border-2 border-slate-800  rounded-full cursor-pointer">
+        <BsChatFill
+          onClick={() => {
+            setModalChat(true)
+            if (modalChat === true) {
+              setModalChat(false)
+            }
+          }}
+          className="w-10 h-10"
+        />
+      </div>
       <div
         style={{
           height: '98vh',
